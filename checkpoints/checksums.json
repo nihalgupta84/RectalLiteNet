@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "model": "RectalLiteNet",
+  "checkpoint_count": 5,
+  "naming": "rectallitenet_seed<seed>.pt",
+  "checkpoints": [
+    {
+      "filename": "rectallitenet_seed42.pt",
+      "seed": 42,
+      "bytes": 125557108,
+      "sha256": "098740edd96dac607975de6dd7892784d7a66d6174d55ec24af93ebee4d2dd53"
+    },
+    {
+      "filename": "rectallitenet_seed3407.pt",
+      "seed": 3407,
+      "bytes": 125557648,
+      "sha256": "acd8a649e971e13db305779ba37d52d7eac0ea16bc468c44f16a7e606bcef8da"
+    },
+    {
+      "filename": "rectallitenet_seed7301.pt",
+      "seed": 7301,
+      "bytes": 125557648,
+      "sha256": "ee3d11212fc15136920b71e92aab2595eb3309b66b6383c6192cbab4ac3efce4"
+    },
+    {
+      "filename": "rectallitenet_seed1337.pt",
+      "seed": 1337,
+      "bytes": 125557648,
+      "sha256": "34c957c43310fbd69173bcda71662b17a9c18c3b4a78128e409ec59d6bce18de"
+    },
+    {
+      "filename": "rectallitenet_seed2026.pt",
+      "seed": 2026,
+      "bytes": 125557648,
+      "sha256": "18adbe50f1c62b4cb34dd7b421a28fe589f6c3313987d29e97230c8d5cf69249"
+    }
+  ]
+}
