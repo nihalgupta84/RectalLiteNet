@@ -20,6 +20,7 @@ RectalLiteNet/
 ├── data/                   # Put downloaded data and manifests here
 ├── datasets/               # CARE loading and preprocessing code
 ├── configs/                # Reproducible project settings
+├── checkpoints/            # Ready-to-use pretrained model weights
 ├── scripts/                # Dataset preparation utilities
 ├── utils/                  # Loss, metrics, checkpoints, and inference helpers
 ├── logs/                   # Generated checkpoints, metrics, and predictions
@@ -36,8 +37,10 @@ RectalLiteNet/
 Python 3.10 or 3.11 is recommended.
 
 ```bash
+git lfs install
 git clone https://github.com/nihalgupta84/RectalLiteNet.git
 cd RectalLiteNet
+git lfs pull
 
 python -m venv .venv
 source .venv/bin/activate          # Linux or macOS
@@ -209,7 +212,7 @@ Evaluate one model on labeled test data:
 python test.py \
   --manifest data/manifests/test.csv \
   --data-root data/CARE \
-  --checkpoint logs/seed42/best.pt \
+  --checkpoint checkpoints/rectallitenet_seed42.pt \
   --output logs/seed42/test_results.json \
   --tta flips \
   --amp
@@ -224,9 +227,9 @@ To evaluate an ensemble, repeat `--checkpoint`:
 python test.py \
   --manifest data/manifests/test.csv \
   --data-root data/CARE \
-  --checkpoint logs/seed42/best.pt \
-  --checkpoint logs/seed3407/best.pt \
-  --checkpoint logs/seed7301/best.pt \
+  --checkpoint checkpoints/rectallitenet_seed42.pt \
+  --checkpoint checkpoints/rectallitenet_seed3407.pt \
+  --checkpoint checkpoints/rectallitenet_seed7301.pt \
   --output logs/ensemble/test_results.json \
   --tta flips \
   --amp
@@ -242,7 +245,7 @@ files. Adjacent files for the same patient should be in the same directory.
 ```bash
 python inference.py \
   --input-dir data/CARE/DataV6/test/test_npz \
-  --checkpoint logs/seed42/best.pt \
+  --checkpoint checkpoints/rectallitenet_seed42.pt \
   --output-dir logs/predictions \
   --tta flips \
   --amp
@@ -257,16 +260,20 @@ For every input slice, it saves:
 
 ## Pretrained checkpoints
 
-The checkpoint download URL will be added here after the public upload is
-complete:
+Five ready-to-use checkpoints are included in the repository through Git LFS:
 
-| File | Download |
-|---|---|
-| RectalLiteNet pretrained checkpoint | **URL to be updated** |
+| Seed | Local checkpoint path |
+|---:|---|
+| 42 | `checkpoints/rectallitenet_seed42.pt` |
+| 3407 | `checkpoints/rectallitenet_seed3407.pt` |
+| 7301 | `checkpoints/rectallitenet_seed7301.pt` |
+| 1337 | `checkpoints/rectallitenet_seed1337.pt` |
+| 2026 | `checkpoints/rectallitenet_seed2026.pt` |
 
-After downloading a checkpoint, use its local path with `--checkpoint`. The
-loader also remains compatible with the earlier RectalLiteNet release
-checkpoint format.
+No separate checkpoint download is required after `git lfs pull`. File sizes
+and SHA-256 hashes are recorded in `checkpoints/checksums.json`. Use any one
+checkpoint for single-model prediction, or repeat `--checkpoint` to average
+multiple models as shown above.
 
 ## Model summary
 
@@ -276,8 +283,7 @@ skip connection, applies convolutional refinement, and applies SCSE attention.
 The final layer directly predicts the three segmentation classes for the center
 slice.
 
-The implementation is in `models/rectal_lite_net.py` and is deliberately kept
-in one file so beginners can follow the full forward pass.
+The implementation is in `models/rectal_lite_net.py` 
 
 ## Common problems
 
