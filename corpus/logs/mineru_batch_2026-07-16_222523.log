@@ -1,0 +1,311 @@
+2026-07-16 22:25:26.900 | INFO     | mineru.cli.client:run_orchestrated_cli:953 - Started local mineru-api at http://127.0.0.1:53867
+2026-07-16 22:25:30.063 | INFO     | __main__:create_app:236 - Request concurrency limited to 3
+INFO:     Started server process [2483959]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:53867 (Press CTRL+C to quit)
+2026-07-16 22:25:30.919 | INFO     | mineru.cli.client:run_planned_task:832 - Submitting batch 1/1 | 4 documents, 54 pages in this batch | 54 pages total | task#1 [GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation, GLocalSeg_A_globallocal_collaborative_segmentation_network_for_rectal_cancer_segmentation, Tuning_vision_foundation_models_for_rectal_cancer_segmentation_from_CT_scans, +1 more]
+2026-07-16 22:25:36.518 | INFO     | mineru.backend.pipeline.pipeline_analyze:doc_analyze_streaming:209 - Pipeline processing-window multi-file run. doc_count=4, total_pages=54, window_size=64, total_batches=1
+Start MinerU FastAPI Service: http://127.0.0.1:53867
+API documentation: http://127.0.0.1:53867/docs
+2026-07-16 22:25:46.804 | INFO     | mineru.backend.pipeline.pipeline_analyze:doc_analyze_streaming:264 - Pipeline processing window batch 1/1: 54/54 pages, batch_pages=54, doc_slices=doc0:1-16,doc1:1-16,doc2:1-11,doc3:1-11
+2026-07-16 22:25:46.840 | INFO     | mineru.backend.pipeline.pipeline_analyze:batch_image_analyze:364 - GPU Memory: 39 GB, Batch Ratio: 16. 
+2026-07-16 22:25:46.840 | INFO     | mineru.backend.pipeline.model_init:__init__:239 - DocAnalysis init, this may take some times......
+2026-07-16 22:25:54.008 | INFO     | mineru.backend.pipeline.model_init:__init__:291 - DocAnalysis init done!
+2026-07-16 22:25:54.009 | INFO     | mineru.backend.pipeline.pipeline_analyze:custom_model_init:83 - model init cost: 7.168456077575684
+Layout Predict:   0%|          | 0/54 [00:00<?, ?it/s]Layout Predict:  15%|█▍        | 8/54 [00:01<00:10,  4.59it/s]Layout Predict:  30%|██▉       | 16/54 [00:02<00:04,  7.84it/s]Layout Predict:  44%|████▍     | 24/54 [00:02<00:02, 10.87it/s]Layout Predict:  59%|█████▉    | 32/54 [00:03<00:01, 12.56it/s]Layout Predict:  74%|███████▍  | 40/54 [00:03<00:01, 13.94it/s]Layout Predict:  89%|████████▉ | 48/54 [00:04<00:00, 15.00it/s]Layout Predict: 100%|██████████| 54/54 [00:04<00:00, 15.28it/s]Layout Predict: 100%|██████████| 54/54 [00:04<00:00, 12.19it/s]
+MFR Predict:   0%|          | 0/272 [00:00<?, ?it/s]MFR Predict:   0%|          | 0/272 [00:00<?, ?it/s]
+2026-07-16 22:25:59.721 | ERROR    | __main__:_process_task:1154 - Async task failed: 2f23fbc1-b9a7-4daf-9326-42e2ad5e39d7
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/cli/fast_api.py", line 1474, in <module>
+    main()
+    └ <Command main>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/click/core.py", line 1569, in __call__
+    return self.main(*args, **kwargs)
+           │    │     │       └ {}
+           │    │     └ ()
+           │    └ <function Command.main at 0x7c828114a160>
+           └ <Command main>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/click/core.py", line 1490, in main
+    rv = self.invoke(ctx)
+         │    │      └ <click.core.Context object at 0x7c7f6e783690>
+         │    └ <function Command.invoke at 0x7c8281149e40>
+         └ <Command main>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/click/core.py", line 1353, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           │   │      │    │           │   └ {'host': '127.0.0.1', 'port': 53867, 'reload': False, 'allow_public_http_client': False, 'enable_vlm_preload': False}
+           │   │      │    │           └ <click.core.Context object at 0x7c7f6e783690>
+           │   │      │    └ <function main at 0x7c7f6e741a80>
+           │   │      └ <Command main>
+           │   └ <function Context.invoke at 0x7c8281149080>
+           └ <click.core.Context object at 0x7c7f6e783690>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/click/core.py", line 907, in invoke
+    return callback(*args, **kwargs)
+           │         │       └ {'host': '127.0.0.1', 'port': 53867, 'reload': False, 'allow_public_http_client': False, 'enable_vlm_preload': False}
+           │         └ ()
+           └ <function main at 0x7c7f6e741a80>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/click/decorators.py", line 34, in new_func
+    return f(get_current_context(), *args, **kwargs)
+           │ │                       │       └ {'host': '127.0.0.1', 'port': 53867, 'reload': False, 'allow_public_http_client': False, 'enable_vlm_preload': False}
+           │ │                       └ ()
+           │ └ <function get_current_context at 0x7c82810dc4a0>
+           └ <function main at 0x7c7f6e741da0>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/cli/fast_api.py", line 1470, in main
+    server.run()
+    │      └ <function Server.run at 0x7c828102b9c0>
+    └ <uvicorn.server.Server object at 0x7c7f6e783b50>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           │           │    │             │                      │    │      └ <function Config.get_loop_factory at 0x7c8280fbbb00>
+           │           │    │             │                      │    └ <uvicorn.config.Config object at 0x7c7f6e783bd0>
+           │           │    │             │                      └ <uvicorn.server.Server object at 0x7c7f6e783b50>
+           │           │    │             └ None
+           │           │    └ <function Server.serve at 0x7c828102ba60>
+           │           └ <uvicorn.server.Server object at 0x7c7f6e783b50>
+           └ <function asyncio_run at 0x7c8281f7e2a0>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           │      │   └ <coroutine object Server.serve at 0x7c7f7fbb75b0>
+           │      └ <function Runner.run at 0x7c828133a3e0>
+           └ <asyncio.runners.Runner object at 0x7c827fd28a90>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<Server.serve() running at /workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/uv...
+           │    │     └ <cyfunction Loop.run_until_complete at 0x7c7f6e7dc400>
+           │    └ <uvloop.Loop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7c827fd28a90>
+> File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/cli/fast_api.py", line 1144, in _process_task
+    await self._run_task(task)
+          │    │         └ AsyncParseTask(task_id='2f23fbc1-b9a7-4daf-9326-42e2ad5e39d7', status='failed', backend='pipeline', file_names=['GLocalSeg A ...
+          │    └ <function AsyncTaskManager._run_task at 0x7c7f771231a0>
+          └ <__main__.AsyncTaskManager object at 0x7c7f5d395710>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/cli/fast_api.py", line 1174, in _run_task
+    await run_parse_job(
+          └ <function run_parse_job at 0x7c7f77122520>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/cli/fast_api.py", line 864, in run_parse_job
+    await asyncio.to_thread(do_parse, **parse_kwargs)
+          │       │         │           └ {'output_dir': '/tmp/mineru-api-client-120fkqha/output/2f23fbc1-b9a7-4daf-9326-42e2ad5e39d7', 'pdf_file_names': ['GLocalSeg A...
+          │       │         └ <function do_parse at 0x7c7f7710aac0>
+          │       └ <function to_thread at 0x7c828134b4c0>
+          └ <module 'asyncio' from '/workspace/miniconda3/envs/mineru/lib/python3.11/asyncio/__init__.py'>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/asyncio/threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+                 │    │                     └ functools.partial(<built-in method run of _contextvars.Context object at 0x7c7f5d3978c0>, <function do_parse at 0x7c7f7710aac...
+                 │    └ <cyfunction Loop.run_in_executor at 0x7c7f6e7dd6c0>
+                 └ <uvloop.Loop running=True closed=False debug=False>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             │        │            └ None
+             │        └ None
+             └ None
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/cli/common.py", line 717, in do_parse
+    _process_pipeline(
+    └ <function _process_pipeline at 0x7c7f7710a700>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/cli/common.py", line 410, in _process_pipeline
+    pipeline_doc_analyze_streaming(
+    └ <function doc_analyze_streaming at 0x7c7d0193e840>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/backend/pipeline/pipeline_analyze.py", line 271, in doc_analyze_streaming
+    batch_results = batch_image_analyze(
+                    └ <function batch_image_analyze at 0x7c7d0193e8e0>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/backend/pipeline/pipeline_analyze.py", line 386, in batch_image_analyze
+    results = batch_model(images_with_extra_info)
+              │           └ [(<PIL.Image.Image image mode=RGB size=1654x2205 at 0x7C7CE7B06A10>, False, 'ch'), (<PIL.Image.Image image mode=RGB size=1654...
+              └ <mineru.backend.pipeline.batch_analyze.BatchAnalyze object at 0x7c7cf05e2950>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/backend/pipeline/batch_analyze.py", line 445, in __call__
+    images_formula_list = run_mfr_inference(
+                          └ <function run_mfr_inference at 0x7c7d01921940>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/backend/pipeline/model_init.py", line 51, in run_mfr_inference
+    return _run_with_inference_lock(
+           └ <function _run_with_inference_lock at 0x7c7f5d3ebba0>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/backend/pipeline/model_init.py", line 36, in _run_with_inference_lock
+    return inference_callable(*args, **kwargs)
+           │                   │       └ {'batch_size': 256}
+           │                   └ ([[], [], [{'cls_id': 5, 'label': 'display_formula', 'score': 0.8906, 'bbox': [847, 2030, 997, 2062], 'index': 19, 'latex': '...
+           └ <bound method UnimernetModel.batch_predict of <mineru.model.mfr.unimernet.Unimernet.UnimernetModel object at 0x7c7ce7b04cd0>>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/model/mfr/unimernet/Unimernet.py", line 181, in batch_predict
+    output = self.model.generate(
+             │    │     └ <function UnimernetModel.generate at 0x7c7cdf1af920>
+             │    └ UnimernetModel(
+             │        (encoder): UnimerSwinModel(
+             │          (embeddings): UnimerSwinEmbeddings(
+             │            (patch_embeddings): UnimerSwinPat...
+             └ <mineru.model.mfr.unimernet.Unimernet.UnimernetModel object at 0x7c7ce7b04cd0>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/model/mfr/unimernet/unimernet_hf/modeling_unimernet.py", line 189, in generate
+    outputs = super().generate(
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           │     │       └ {'pixel_values': tensor([[[[-4.5625, -4.5625, -4.5625,  ..., -4.5625, -4.5625, -4.5625],
+           │     │                   [-4.5625, -4.5625, -4.5625...
+           │     └ (UnimernetModel(
+           │         (encoder): UnimerSwinModel(
+           │           (embeddings): UnimerSwinEmbeddings(
+           │             (patch_embeddings): UnimerSwinPa...
+           └ <function GenerationMixin.generate at 0x7c7d2cb9b740>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/transformers/generation/utils.py", line 2467, in generate
+    model_kwargs = self._prepare_encoder_decoder_kwargs_for_generation(
+                   │    └ <function GenerationMixin._prepare_encoder_decoder_kwargs_for_generation at 0x7c7d2cb9a840>
+                   └ UnimernetModel(
+                       (encoder): UnimerSwinModel(
+                         (embeddings): UnimerSwinEmbeddings(
+                           (patch_embeddings): UnimerSwinPat...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/transformers/generation/utils.py", line 861, in _prepare_encoder_decoder_kwargs_for_generation
+    model_kwargs["encoder_outputs"]: ModelOutput = encoder(**encoder_kwargs)  # type: ignore
+    │                                              │         └ {'output_attentions': False, 'output_hidden_states': False, 'return_dict': True, 'pixel_values': tensor([[[[-4.5625, -4.5625,...
+    │                                              └ UnimerSwinModel(
+    │                                                  (embeddings): UnimerSwinEmbeddings(
+    │                                                    (patch_embeddings): UnimerSwinPatchEmbeddings(
+    │                                                      (projection):...
+    └ {}
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           │    │           │       └ {'output_attentions': False, 'output_hidden_states': False, 'return_dict': True, 'pixel_values': tensor([[[[-4.5625, -4.5625,...
+           │    │           └ ()
+           │    └ <function Module._call_impl at 0x7c81287c9620>
+           └ UnimerSwinModel(
+               (embeddings): UnimerSwinEmbeddings(
+                 (patch_embeddings): UnimerSwinPatchEmbeddings(
+                   (projection):...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           │             │       └ {'output_attentions': False, 'output_hidden_states': False, 'return_dict': True, 'pixel_values': tensor([[[[-4.5625, -4.5625,...
+           │             └ ()
+           └ <bound method UnimerSwinModel.forward of UnimerSwinModel(
+               (embeddings): UnimerSwinEmbeddings(
+                 (patch_embeddings): Unime...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/model/mfr/unimernet/unimernet_hf/unimer_swin/modeling_unimer_swin.py", line 1057, in forward
+    encoder_outputs = self.encoder(
+                      └ UnimerSwinModel(
+                          (embeddings): UnimerSwinEmbeddings(
+                            (patch_embeddings): UnimerSwinPatchEmbeddings(
+                              (projection):...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           │    │           │       └ {'head_mask': [None, None, None, None], 'output_attentions': False, 'output_hidden_states': False, 'return_dict': True}
+           │    │           └ (tensor([[[ 0.6465, -0.6475,  0.0589,  ...,  0.6216,  0.7632,  0.0563],
+           │    │                      [ 0.4094, -0.1907,  0.2035,  ...,  0.1613,  ...
+           │    └ <function Module._call_impl at 0x7c81287c9620>
+           └ UnimerSwinEncoder(
+               (layers): ModuleList(
+                 (0): UnimerSwinStage(
+                   (blocks): ModuleList(
+                     (0-5): 6 x UnimerSwi...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           │             │       └ {'head_mask': [None, None, None, None], 'output_attentions': False, 'output_hidden_states': False, 'return_dict': True}
+           │             └ (tensor([[[ 0.6465, -0.6475,  0.0589,  ...,  0.6216,  0.7632,  0.0563],
+           │                        [ 0.4094, -0.1907,  0.2035,  ...,  0.1613,  ...
+           └ <bound method UnimerSwinEncoder.forward of UnimerSwinEncoder(
+               (layers): ModuleList(
+                 (0): UnimerSwinStage(
+                   (blocks...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/model/mfr/unimernet/unimernet_hf/unimer_swin/modeling_unimer_swin.py", line 883, in forward
+    layer_outputs = layer_module(
+                    └ UnimerSwinStage(
+                        (blocks): ModuleList(
+                          (0-5): 6 x UnimerSwinLayer(
+                            (layernorm_before): LayerNorm((96,), eps=1e-05...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           │    │           │       └ {}
+           │    │           └ (tensor([[[ 0.6465, -0.6475,  0.0589,  ...,  0.6216,  0.7632,  0.0563],
+           │    │                      [ 0.4094, -0.1907,  0.2035,  ...,  0.1613,  ...
+           │    └ <function Module._call_impl at 0x7c81287c9620>
+           └ UnimerSwinStage(
+               (blocks): ModuleList(
+                 (0-5): 6 x UnimerSwinLayer(
+                   (layernorm_before): LayerNorm((96,), eps=1e-05...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           │             │       └ {}
+           │             └ (tensor([[[ 0.6465, -0.6475,  0.0589,  ...,  0.6216,  0.7632,  0.0563],
+           │                        [ 0.4094, -0.1907,  0.2035,  ...,  0.1613,  ...
+           └ <bound method UnimerSwinStage.forward of UnimerSwinStage(
+               (blocks): ModuleList(
+                 (0-5): 6 x UnimerSwinLayer(
+                   (laye...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/model/mfr/unimernet/unimernet_hf/unimer_swin/modeling_unimer_swin.py", line 802, in forward
+    layer_outputs = layer_module(
+                    └ UnimerSwinLayer(
+                        (layernorm_before): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+                        (ce): ModuleList(
+                          (0-1): 2 ...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           │    │           │       └ {}
+           │    │           └ (tensor([[[ 0.6465, -0.6475,  0.0589,  ...,  0.6216,  0.7632,  0.0563],
+           │    │                      [ 0.4094, -0.1907,  0.2035,  ...,  0.1613,  ...
+           │    └ <function Module._call_impl at 0x7c81287c9620>
+           └ UnimerSwinLayer(
+               (layernorm_before): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+               (ce): ModuleList(
+                 (0-1): 2 ...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           │             │       └ {}
+           │             └ (tensor([[[ 0.6465, -0.6475,  0.0589,  ...,  0.6216,  0.7632,  0.0563],
+           │                        [ 0.4094, -0.1907,  0.2035,  ...,  0.1613,  ...
+           └ <bound method UnimerSwinLayer.forward of UnimerSwinLayer(
+               (layernorm_before): LayerNorm((96,), eps=1e-05, elementwise_affin...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/model/mfr/unimernet/unimernet_hf/unimer_swin/modeling_unimer_swin.py", line 756, in forward
+    layer_output = self.intermediate(layer_output)
+                   │                 └ tensor([[[ 2.1074, -2.0547, -0.0052,  ...,  2.0684,  2.8066, -0.0850],
+                   │                            [ 1.1416, -0.9199,  0.4722,  ...,  0.3306,  2...
+                   └ UnimerSwinLayer(
+                       (layernorm_before): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+                       (ce): ModuleList(
+                         (0-1): 2 ...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           │    │           │       └ {}
+           │    │           └ (tensor([[[ 2.1074, -2.0547, -0.0052,  ...,  2.0684,  2.8066, -0.0850],
+           │    │                      [ 1.1416, -0.9199,  0.4722,  ...,  0.3306,  ...
+           │    └ <function Module._call_impl at 0x7c81287c9620>
+           └ UnimerSwinIntermediate(
+               (dense): Linear(in_features=96, out_features=384, bias=True)
+               (intermediate_act_fn): GELUActivatio...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           │             │       └ {}
+           │             └ (tensor([[[ 2.1074, -2.0547, -0.0052,  ...,  2.0684,  2.8066, -0.0850],
+           │                        [ 1.1416, -0.9199,  0.4722,  ...,  0.3306,  ...
+           └ <bound method UnimerSwinIntermediate.forward of UnimerSwinIntermediate(
+               (dense): Linear(in_features=96, out_features=384, b...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/mineru/model/mfr/unimernet/unimernet_hf/unimer_swin/modeling_unimer_swin.py", line 581, in forward
+    hidden_states = self.dense(hidden_states)
+                    │          └ tensor([[[ 2.1074, -2.0547, -0.0052,  ...,  2.0684,  2.8066, -0.0850],
+                    │                     [ 1.1416, -0.9199,  0.4722,  ...,  0.3306,  2...
+                    └ UnimerSwinIntermediate(
+                        (dense): Linear(in_features=96, out_features=384, bias=True)
+                        (intermediate_act_fn): GELUActivatio...
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           │    │           │       └ {}
+           │    │           └ (tensor([[[ 2.1074, -2.0547, -0.0052,  ...,  2.0684,  2.8066, -0.0850],
+           │    │                      [ 1.1416, -0.9199,  0.4722,  ...,  0.3306,  ...
+           │    └ <function Module._call_impl at 0x7c81287c9620>
+           └ Linear(in_features=96, out_features=384, bias=True)
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           │             │       └ {}
+           │             └ (tensor([[[ 2.1074, -2.0547, -0.0052,  ...,  2.0684,  2.8066, -0.0850],
+           │                        [ 1.1416, -0.9199,  0.4722,  ...,  0.3306,  ...
+           └ <bound method Linear.forward of Linear(in_features=96, out_features=384, bias=True)>
+  File "/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           │ │      │      │            └ Linear(in_features=96, out_features=384, bias=True)
+           │ │      │      └ Linear(in_features=96, out_features=384, bias=True)
+           │ │      └ tensor([[[ 2.1074, -2.0547, -0.0052,  ...,  2.0684,  2.8066, -0.0850],
+           │ │                 [ 1.1416, -0.9199,  0.4722,  ...,  0.3306,  2...
+           │ └ <built-in function linear>
+           └ <module 'torch.nn.functional' from '/workspace/miniconda3/envs/mineru/lib/python3.11/site-packages/torch/nn/functional.py'>
+
+RuntimeError: NVML_SUCCESS == r INTERNAL ASSERT FAILED at "/pytorch/c10/cuda/CUDACachingAllocator.cpp":1165, please report a bug to PyTorch. 
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [2483959]
+Error: 1 task(s) failed while processing documents:
+- task#1 (GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation, GLocalSeg_A_globallocal_collaborative_segmentation_network_for_rectal_cancer_segmentation, Tuning_vision_foundation_models_for_rectal_cancer_segmentation_from_CT_scans, s43856-025-00953-0): Task 2f23fbc1-b9a7-4daf-9326-42e2ad5e39d7 failed for task#1 [GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation, GLocalSeg_A_globallocal_collaborative_segmentation_network_for_rectal_cancer_segmentation, Tuning_vision_foundation_models_for_rectal_cancer_segmentation_from_CT_scans, s43856-025-00953-0]: {"task_id": "2f23fbc1-b9a7-4daf-9326-42e2ad5e39d7", "status": "failed", "backend": "pipeline", "file_names": ["GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation", "GLocalSeg_A_globallocal_collaborative_segmentation_network_for_rectal_cancer_segmentation", "Tuning_vision_foundation_models_for_rectal_cancer_segmentation_from_CT_scans", "s43856-025-00953-0"], "created_at": "2026-07-16T22:25:31.001004+00:00", "started_at": "2026-07-16T22:25:31.001682+00:00", "completed_at": "2026-07-16T22:25:59.721115+00:00", "error": "NVML_SUCCESS == r INTERNAL ASSERT FAILED at \"/pytorch/c10/cuda/CUDACachingAllocator.cpp\":1165, please report a bug to PyTorch. ", "status_url": "http://127.0.0.1:53867/tasks/2f23fbc1-b9a7-4daf-9326-42e2ad5e39d7", "result_url": "http://127.0.0.1:53867/tasks/2f23fbc1-b9a7-4daf-9326-42e2ad5e39d7/result", "queued_ahead": 0}

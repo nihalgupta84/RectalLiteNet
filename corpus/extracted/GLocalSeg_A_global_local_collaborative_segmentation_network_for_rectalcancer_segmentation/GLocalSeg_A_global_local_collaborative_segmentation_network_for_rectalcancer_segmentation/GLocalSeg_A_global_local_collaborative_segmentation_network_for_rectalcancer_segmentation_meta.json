@@ -1,0 +1,13 @@
+{
+  "paper_title": "GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation",
+  "slug": "GLocalSeg_A_global_local_collaborative_segmentation_network_for_rectalcancer_segmentation",
+  "created_at": "2026-07-16T22:32:41",
+  "source_mineru_auto_dir": "/workspace/projects/vision/trans_unet/corpus/mineru_raw/GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation/auto",
+  "source_markdown": "/workspace/projects/vision/trans_unet/corpus/mineru_raw/GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation/auto/GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation.md",
+  "source_content_json": "/workspace/projects/vision/trans_unet/corpus/mineru_raw/GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation/auto/GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation_content_list.json",
+  "source_origin_pdf": "/workspace/projects/vision/trans_unet/corpus/mineru_raw/GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation/auto/GLocalSeg A global–local collaborative segmentation network for rectalcancer segmentation_origin.pdf",
+  "origin_pdf_sha256": "0c68c4ad8c5bab38b24af167824ef31fa708ca17f40fa15033c1e81fb8d4fa08",
+  "main_markdown": "GLocalSeg_A_global_local_collaborative_segmentation_network_for_rectalcancer_segmentation.md",
+  "image_count": 87,
+  "format": "clean_nested_mineru_corpus"
+}
