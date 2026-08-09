@@ -2,6 +2,15 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
-data/
-outputs/
-wandb/
+
+# User-provided datasets and generated outputs are not committed.
+data/*
+!data/.gitkeep
+logs/*
+!logs/.gitkeep
+*.pt
+
+# Local editor and operating-system files.
+.idea/
+.vscode/
+.DS_Store
