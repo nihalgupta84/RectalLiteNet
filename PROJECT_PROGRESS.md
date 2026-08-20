@@ -62,3 +62,23 @@ large command output.
 - Failures/limitations: no full training, private CARE evaluation, GPU workload,
   pretrained-weight download, or live W&B network call was requested or run.
 - Next step: review and commit the focused changes when ready.
+
+## 2026-08-20 19:47:54 UTC — Review fixes published
+
+- Objective: commit and synchronize the completed review fixes with GitHub.
+- Files changed: `PROJECT_PROGRESS.md` for this publishing record; the
+  implementation scope is recorded in the preceding entry.
+- Commands run: created branch `codex/fix-review-reproducibility`, staged the
+  12 explicit project files, ran `git diff --cached --check`, committed as
+  `5c42d49` (`Fix experiment reproducibility safeguards`), and pushed the
+  branch to `origin` with upstream tracking.
+- Validation: the staged whitespace check passed; the implementation validation
+  remains recorded in
+  `logs/review-fix-validation-20260820T190908Z-896094/validation-success.json`.
+- Active processes: none.
+- W&B run: none.
+- Logs/checkpoints created: none during publishing.
+- Status: completed; the implementation commit is available on
+  `origin/codex/fix-review-reproducibility`.
+- Failures: none.
+- Next step: open a pull request if review/merge through GitHub is desired.
