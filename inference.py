@@ -41,7 +41,11 @@ def parse_args() -> argparse.Namespace:
         help="Directory containing CARE NPZ files.",
     )
     parser.add_argument("--checkpoint", action="append", required=True)
-    parser.add_argument("--output-dir", default="logs/predictions")
+    parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="New prediction directory; must not already exist.",
+    )
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--workers", type=int, default=None)
     parser.add_argument("--tta", choices=["none", "flips"], default=None)
@@ -65,6 +69,12 @@ def _data_settings(payload: dict[str, Any]) -> dict[str, Any]:
 
 def main() -> None:
     args = parse_args()
+    output_dir = Path(args.output_dir)
+    if output_dir.exists():
+        raise FileExistsError(
+            f"Output directory already exists: {output_dir}. "
+            "Choose a new prediction directory."
+        )
     inference_config = load_config(args.config)["inference"]
     batch_size = (
         args.batch_size
@@ -110,8 +120,7 @@ def main() -> None:
         loader_options["prefetch_factor"] = 2
     loader = DataLoader(dataset, **loader_options)
 
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=False)
     use_amp = amp_requested and device.type == "cuda"
     output_files = []
 

@@ -31,7 +31,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--data-root", required=True)
     parser.add_argument("--checkpoint", action="append", required=True)
-    parser.add_argument("--output", default="logs/test_results.json")
+    parser.add_argument(
+        "--output",
+        required=True,
+        help="New JSON result path; must not already exist.",
+    )
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--workers", type=int, default=None)
     parser.add_argument("--tta", choices=["none", "flips"], default=None)
@@ -55,6 +59,11 @@ def _data_settings(payload: dict[str, Any]) -> dict[str, Any]:
 
 def main() -> None:
     args = parse_args()
+    output_path = Path(args.output)
+    if output_path.exists():
+        raise FileExistsError(
+            f"Output file already exists: {output_path}. Choose a new result path."
+        )
     inference_config = load_config(args.config)["inference"]
     batch_size = (
         args.batch_size
@@ -144,9 +153,10 @@ def main() -> None:
         "global_metrics": global_metrics.compute(),
         "per_patient": per_patient,
     }
-    output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    with output_path.open("x", encoding="utf-8") as handle:
+        json.dump(result, handle, indent=2)
+        handle.write("\n")
     print(json.dumps(result["global_metrics"], indent=2))
     print(f"Saved detailed results to {output_path}")
 

@@ -35,8 +35,14 @@ def load_checkpoint(
 
     state = payload.get("model_state", payload)
     model_config = payload.get("model_config", {})
+    context_slices = int(model_config.get("context_slices", 3))
+    if context_slices != 3:
+        raise ValueError(
+            "RectalLiteNet CARE checkpoints require context_slices=3 because "
+            f"CAREDataset always emits three channels; got {context_slices}"
+        )
     model = RectalLiteNet(
-        context_slices=int(model_config.get("context_slices", 3)),
+        context_slices=context_slices,
         encoder_name=str(model_config.get("encoder_name", "convnext_tiny")),
         pretrained=False,
     )

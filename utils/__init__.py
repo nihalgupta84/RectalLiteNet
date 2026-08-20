@@ -6,9 +6,11 @@ from .inference import predict_probabilities, restore_probability
 from .losses import SegmentationLoss
 from .metrics import CLASS_NAMES, MetricAccumulator
 from .seed import seed_everything
+from .tracking import ExperimentTracker
 
 __all__ = [
     "CLASS_NAMES",
+    "ExperimentTracker",
     "MetricAccumulator",
     "SegmentationLoss",
     "load_checkpoint",

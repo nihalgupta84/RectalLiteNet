@@ -28,5 +28,11 @@
     "workers": 4,
     "tta": "flips",
     "amp": true
+  },
+  "tracking": {
+    "wandb_enabled": true,
+    "wandb_project": "rectallitenet",
+    "wandb_entity": null,
+    "wandb_run_name": null
   }
 }

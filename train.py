@@ -8,6 +8,8 @@ Example:
 from __future__ import annotations
 
 import argparse
+import copy
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -19,9 +21,10 @@ from torch.amp import GradScaler, autocast
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from datasets import CAREDataset, records_from_manifest
+from datasets import CAREDataset, Record, records_from_manifest
 from models import RectalLiteNet
 from utils import (
+    ExperimentTracker,
     MetricAccumulator,
     SegmentationLoss,
     load_config,
@@ -37,7 +40,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--train-manifest", required=True)
     parser.add_argument("--val-manifest", default=None)
     parser.add_argument("--data-root", required=True)
-    parser.add_argument("--output-dir", default="logs/training")
+    parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="New directory for this run; must not already exist.",
+    )
     parser.add_argument("--epochs", type=int, default=None, help="Override config value.")
     parser.add_argument(
         "--batch-size",
@@ -65,7 +72,51 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Enable or disable automatic mixed precision.",
     )
+    parser.add_argument(
+        "--wandb",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="Override W&B mirroring from the config.",
+    )
+    parser.add_argument("--wandb-project", default=None)
+    parser.add_argument("--wandb-entity", default=None)
+    parser.add_argument("--wandb-run-name", default=None)
     return parser.parse_args()
+
+
+def _manifest_identity(
+    path: str | Path,
+    records: list[Record],
+) -> dict[str, Any]:
+    """Describe a manifest by path, content hash, and split cardinalities."""
+    manifest_path = Path(path)
+    digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+    return {
+        "path": str(manifest_path.resolve()),
+        "sha256": digest,
+        "slices": len(records),
+        "patients": len({record.patient_id for record in records}),
+    }
+
+
+def _tracking_metrics(row: dict[str, Any]) -> dict[str, float | int]:
+    """Flatten one history row into stable W&B metric names."""
+    metrics: dict[str, float | int] = {
+        "epoch": int(row["epoch"]),
+        "train/loss": float(row["train_loss"]),
+        "learning_rate": float(row["learning_rate"]),
+    }
+    validation = row.get("validation")
+    if validation is not None:
+        metrics.update(
+            {
+                "validation/loss": float(validation["loss"]),
+                "validation/macro_dice": float(validation["macro_dice"]),
+                "validation/normal_dice": float(validation["normal_dice"]),
+                "validation/tumor_dice": float(validation["tumor_dice"]),
+            }
+        )
+    return metrics
 
 
 def _loader(
@@ -145,6 +196,7 @@ def main() -> None:
     data_config = config["data"]
     model_config = config["model"]
     training_config = config["training"]
+    tracking_config = config.get("tracking", {})
 
     epochs = args.epochs if args.epochs is not None else int(training_config["epochs"])
     batch_size = (
@@ -165,6 +217,35 @@ def main() -> None:
         else bool(model_config["pretrained"])
     )
     amp_requested = args.amp if args.amp is not None else bool(training_config["amp"])
+    wandb_enabled = (
+        args.wandb
+        if args.wandb is not None
+        else bool(tracking_config.get("wandb_enabled", True))
+    )
+    wandb_project_value = (
+        args.wandb_project
+        if args.wandb_project is not None
+        else tracking_config.get("wandb_project", "rectallitenet")
+    )
+    wandb_project = (
+        "" if wandb_project_value is None else str(wandb_project_value).strip()
+    )
+    if wandb_enabled and not wandb_project:
+        raise ValueError("wandb_project must be non-empty when W&B is enabled")
+    wandb_entity = (
+        args.wandb_entity
+        if args.wandb_entity is not None
+        else tracking_config.get("wandb_entity")
+    )
+    if wandb_entity is not None:
+        wandb_entity = str(wandb_entity)
+    wandb_run_name = (
+        args.wandb_run_name
+        if args.wandb_run_name is not None
+        else tracking_config.get("wandb_run_name")
+    )
+    if wandb_run_name is not None:
+        wandb_run_name = str(wandb_run_name)
 
     if epochs <= 0 or batch_size <= 0 or accumulation_steps <= 0 or workers < 0:
         raise ValueError(
@@ -172,11 +253,17 @@ def main() -> None:
             "workers cannot be negative"
         )
 
+    context_slices = int(data_config["context_slices"])
+    if context_slices != 3:
+        raise ValueError(
+            "data.context_slices must be 3 because CAREDataset always emits "
+            f"the (-1, 0, +1) slice stack; got {context_slices}"
+        )
+
     seed_everything(seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     use_amp = amp_requested and device.type == "cuda"
     output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
 
     dataset_options = {
         "image_size": int(data_config["image_size"]),
@@ -185,10 +272,7 @@ def main() -> None:
         "std": float(data_config["std"]),
     }
     train_records = records_from_manifest(args.train_manifest, args.data_root)
-    train_dataset = CAREDataset(train_records, training=True, **dataset_options)
-    train_loader = _loader(train_dataset, batch_size, workers, True, device)
 
-    val_loader = None
     val_records = []
     if args.val_manifest:
         val_records = records_from_manifest(args.val_manifest, args.data_root)
@@ -197,6 +281,18 @@ def main() -> None:
         overlap = train_patients & val_patients
         if overlap:
             raise ValueError(f"Patient leakage between train and val: {sorted(overlap)[:5]}")
+
+    if output_dir.exists():
+        raise FileExistsError(
+            f"Output directory already exists: {output_dir}. Choose a new run directory."
+        )
+    output_dir.mkdir(parents=True, exist_ok=False)
+
+    train_dataset = CAREDataset(train_records, training=True, **dataset_options)
+    train_loader = _loader(train_dataset, batch_size, workers, True, device)
+
+    val_loader = None
+    if args.val_manifest:
         val_dataset = CAREDataset(
             val_records,
             training=False,
@@ -205,8 +301,73 @@ def main() -> None:
         )
         val_loader = _loader(val_dataset, batch_size, workers, False, device)
 
+    stored_model_config = {
+        "name": "RectalLiteNet",
+        "context_slices": context_slices,
+        "encoder_name": str(model_config["encoder_name"]),
+        "image_size": int(data_config["image_size"]),
+        "normalization": "CARE",
+        "mean": float(data_config["mean"]),
+        "std": float(data_config["std"]),
+        "fixed_crop_box": list(data_config["fixed_crop_box"]),
+    }
+    history: list[dict[str, Any]] = []
+    best_score = -np.inf
+
+    checkpoint_paths = {
+        "best": str((output_dir / "best.pt").resolve()),
+        "last": str((output_dir / "last.pt").resolve()),
+        "history": str((output_dir / "history.json").resolve()),
+    }
+    split_identity = {
+        "train": _manifest_identity(args.train_manifest, train_records),
+        "validation": (
+            _manifest_identity(args.val_manifest, val_records)
+            if args.val_manifest
+            else None
+        ),
+        "data_root": str(Path(args.data_root).resolve()),
+    }
+    resolved_config = copy.deepcopy(config)
+    resolved_config["training"].update(
+        {
+            "epochs": epochs,
+            "batch_size": batch_size,
+            "gradient_accumulation_steps": accumulation_steps,
+            "workers": workers,
+            "seed": seed,
+            "amp": amp_requested,
+        }
+    )
+    resolved_config["model"]["pretrained"] = pretrained
+    resolved_config["tracking"] = {
+        "wandb_enabled": wandb_enabled,
+        "wandb_project": wandb_project,
+        "wandb_entity": wandb_entity,
+        "wandb_run_name": wandb_run_name,
+    }
+    resolved_config["runtime"] = {
+        "device": str(device),
+        "amp_enabled": use_amp,
+        "splits": split_identity,
+        "checkpoints": checkpoint_paths,
+        "local_event_log": str((output_dir / "events.jsonl").resolve()),
+    }
+    tracker = ExperimentTracker(
+        output_dir / "events.jsonl",
+        resolved_config,
+        wandb_enabled=wandb_enabled,
+        wandb_project=wandb_project,
+        wandb_entity=wandb_entity,
+        wandb_run_name=wandb_run_name,
+    )
+    resolved_config["runtime"]["wandb_run_id"] = tracker.run_id
+    with (output_dir / "resolved_config.json").open("x", encoding="utf-8") as handle:
+        json.dump(resolved_config, handle, indent=2)
+        handle.write("\n")
+
     model = RectalLiteNet(
-        context_slices=int(data_config["context_slices"]),
+        context_slices=context_slices,
         encoder_name=str(model_config["encoder_name"]),
         pretrained=pretrained,
     ).to(device)
@@ -226,19 +387,6 @@ def main() -> None:
     )
     scaler = GradScaler(device.type, enabled=use_amp)
 
-    stored_model_config = {
-        "name": "RectalLiteNet",
-        "context_slices": int(data_config["context_slices"]),
-        "encoder_name": str(model_config["encoder_name"]),
-        "image_size": int(data_config["image_size"]),
-        "normalization": "CARE",
-        "mean": float(data_config["mean"]),
-        "std": float(data_config["std"]),
-        "fixed_crop_box": list(data_config["fixed_crop_box"]),
-    }
-    history: list[dict[str, Any]] = []
-    best_score = -np.inf
-
     print(
         json.dumps(
             {
@@ -247,6 +395,8 @@ def main() -> None:
                 "training_slices": len(train_records),
                 "validation_slices": len(val_records),
                 "effective_batch_size": batch_size * accumulation_steps,
+                "wandb_run_id": tracker.run_id,
+                "local_event_log": str(output_dir / "events.jsonl"),
             }
         )
     )
@@ -302,6 +452,7 @@ def main() -> None:
             score = -row["train_loss"]
         history.append(row)
         print(json.dumps(row))
+        tracker.log(_tracking_metrics(row), step=epoch)
 
         checkpoint_payload = {
             "format_version": 1,
@@ -315,6 +466,13 @@ def main() -> None:
                 "physical_batch_size": batch_size,
                 "gradient_accumulation_steps": accumulation_steps,
                 "effective_batch_size": batch_size * accumulation_steps,
+                "training_manifest_sha256": split_identity["train"]["sha256"],
+                "validation_manifest_sha256": (
+                    split_identity["validation"]["sha256"]
+                    if split_identity["validation"] is not None
+                    else None
+                ),
+                "wandb_run_id": tracker.run_id,
             },
             "history": history,
         }
@@ -328,7 +486,24 @@ def main() -> None:
             encoding="utf-8",
         )
 
-    print(json.dumps({"status": "completed", "output_dir": str(output_dir)}))
+    tracker.finish(
+        {
+            "status": "completed",
+            "best_score": float(best_score),
+            "best_checkpoint": checkpoint_paths["best"],
+            "last_checkpoint": checkpoint_paths["last"],
+        }
+    )
+    wandb_run_id = tracker.run_id
+    print(
+        json.dumps(
+            {
+                "status": "completed",
+                "output_dir": str(output_dir),
+                "wandb_run_id": wandb_run_id,
+            }
+        )
+    )
 
 
 if __name__ == "__main__":

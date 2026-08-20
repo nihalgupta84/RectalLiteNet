@@ -164,7 +164,8 @@ using a provided checkpoint because preprocessing must match training.
 
 ## 6. Train RectalLiteNet
 
-Start one training run:
+Create a task-specific Bash launcher and start one training run with a unique
+run identifier. `--output-dir` is required and refuses an existing directory:
 
 ```bash
 python train.py \
@@ -176,6 +177,10 @@ python train.py \
   --seed 42
 ```
 
+Run that command from the launcher after activating the project environment,
+and launch training with `nohup` so stdout and stderr are retained in a unique
+file such as `logs/seed42/train.log`.
+
 The first run may download ImageNet initialization weights for ConvNeXt-Tiny.
 Training produces:
 
@@ -183,8 +188,16 @@ Training produces:
 logs/seed42/
 ├── best.pt       # Highest validation macro Dice
 ├── last.pt       # Most recent epoch
-└── history.json  # Loss and validation metrics for every epoch
+├── history.json  # Loss and validation metrics for every epoch
+├── resolved_config.json # Exact settings, split hashes, and output paths
+├── events.jsonl  # Durable local experiment events and metrics
+└── wandb/        # W&B client files when mirroring is enabled
 ```
+
+W&B mirroring is enabled by default. Configure it with `--wandb-project`,
+`--wandb-entity`, and `--wandb-run-name`. If W&B is unavailable, training
+continues and records the failure and all subsequent metrics in `events.jsonl`;
+`--no-wandb` explicitly selects local-only tracking.
 
 Useful command-line overrides:
 
@@ -206,7 +219,8 @@ visible in `configs/default.json`.
 
 ## 7. Test a trained checkpoint
 
-Evaluate one model on labeled test data:
+Evaluate one model on labeled test data. `--output` is required and must name a
+new file:
 
 ```bash
 python test.py \
@@ -241,6 +255,7 @@ All ensemble checkpoints must have identical preprocessing settings.
 
 `inference.py` accepts a directory of labeled or unlabeled CARE-style NPZ
 files. Adjacent files for the same patient should be in the same directory.
+`--output-dir` is required and must name a new directory.
 
 ```bash
 python inference.py \
